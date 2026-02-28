@@ -45,54 +45,71 @@ public class ProductModelManagerList implements ModelInterface{
 
     @Override
     public List<Product> getProductsSortedByName() {
-        if (head == null || head.getNext() == null) {
-            return getAllProducts();
-        }
+        if (head == null || head.getNext() == null) return getAllProducts();
+        bubbleSortByName();
+        return getAllProducts();
+    }
 
+    private void bubbleSortByName() {
         boolean swapped;
         do {
-            swapped = false;
-            ProductNode current = head;
-
-            while (current.getNext() != null) {
-                String nameA = current.getProduct().getDecription().toLowerCase();
-                String nameB = current.getNext().getProduct().getDecription().toLowerCase();
-
-                if (nameA.compareTo(nameB) > 0) {
-                    Product temp = current.getProduct();
-                    current.setProduct(current.getNext().getProduct());
-                    current.getNext().setProduct(temp);
-                    swapped = true;
-                }
-                current = current.getNext();
-            }
+            swapped = sortPass();
         } while (swapped);
+    }
 
-        return getAllProducts();
+    private boolean sortPass() {
+        boolean swapped = false;
+        ProductNode current = head;
+        while (current.getNext() != null) {
+            if (shouldSwap(current, current.getNext())) {
+                swapProducts(current, current.getNext());
+                swapped = true;
+            }
+            current = current.getNext();
+        }
+        return swapped;
+    }
+
+    private boolean shouldSwap(ProductNode a, ProductNode b) {
+        String nameA = a.getProduct().getDescription().toLowerCase();
+        String nameB = b.getProduct().getDescription().toLowerCase();
+        return nameA.compareTo(nameB) > 0;
+    }
+
+    private void swapProducts(ProductNode a, ProductNode b) {
+        Product temp = a.getProduct();
+        a.setProduct(b.getProduct());
+        b.setProduct(temp);
     }
 
     @Override
     public int deleteProductsByName(String searchTerm) {
-        int deleted = 0;
         String term = searchTerm.toLowerCase();
+        int deleted = deleteFromHead(term);
+        deleted += deleteFromRest(term);
+        return deleted;
+    }
 
-        while (head != null && head.getProduct().getDecription().toLowerCase().contains(term)) {
+    private int deleteFromHead(String term) {
+        int deleted = 0;
+        while (head != null && head.getProduct().getDescription().toLowerCase().contains(term)) {
             head = head.getNext();
             size--;
             deleted++;
         }
+        return deleted;
+    }
 
-        if (head != null) {
-            ProductNode current = head;
-            while (current.getNext() != null) {
-                String name = current.getNext().getProduct().getDecription().toLowerCase();
-                if (name.contains(term)) {
-                    current.setNext(current.getNext().getNext());
-                    size--;
-                    deleted++;
-                } else {
-                    current = current.getNext();
-                }
+    private int deleteFromRest(String term) {
+        int deleted = 0;
+        ProductNode current = head;
+        while (current != null && current.getNext() != null) {
+            if (current.getNext().getProduct().getDescription().toLowerCase().contains(term)) {
+                current.setNext(current.getNext().getNext());
+                size--;
+                deleted++;
+            } else {
+                current = current.getNext();
             }
         }
         return deleted;

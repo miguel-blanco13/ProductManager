@@ -30,11 +30,7 @@ public class ConsoleView implements ViewInterface {
         return sb.toString();
     }
 
-    private void printTopBorder() {
-        System.out.println(CYAN + "+" + repeat("-", WIDTH) + "+" + RESET);
-    }
-
-    private void printBottomBorder() {
+    private void printHorizontalBorder() {
         System.out.println(CYAN + "+" + repeat("-", WIDTH) + "+" + RESET);
     }
 
@@ -52,7 +48,6 @@ public class ConsoleView implements ViewInterface {
     }
 
     private void printLeftLine(String label, String text) {
-        String content = "  " + label + text;
         int visibleLength = 2 + label.length() + text.length();
         int padding = WIDTH - visibleLength;
         if (padding < 0) padding = 0;
@@ -74,9 +69,18 @@ public class ConsoleView implements ViewInterface {
         System.out.println(CYAN + "|" + repeat(" ", WIDTH) + "|" + RESET);
     }
 
+    private void printCenteredLine(String text, String color) {
+        int padding = WIDTH - text.length();
+        int paddingLeft = Math.max(0, padding / 2);
+        int paddingRight = Math.max(0, padding - paddingLeft);
+        System.out.println(CYAN + "|" + RESET
+                + repeat(" ", paddingLeft) + color + BOLD + text + RESET
+                + repeat(" ", paddingRight) + CYAN + "|" + RESET);
+    }
+
     @Override
     public void showMenu() {
-        printTopBorder();
+        printHorizontalBorder();
         printLine("ADMINISTRADOR DE PRODUCTOS - UPTC");
         printSeparator();
         printEmptyLine();
@@ -91,55 +95,49 @@ public class ConsoleView implements ViewInterface {
 
     @Override
     public void showProducts(List<Product> products) {
-        printTopBorder();
+        printHorizontalBorder();
         printLine("PRODUCTOS REGISTRADOS");
+        printTableHeader();
+        for (int i = 0; i < products.size(); i++) {
+            printProductRow(i + 1, products.get(i));
+        }
+        printHorizontalBorder();
+    }
+
+    private void printTableHeader() {
         printSeparator();
         printLeftLine(String.format("%-25s %-10s %-12s", "DESCRIPCION", "PRECIO", "UNIDAD"));
         printSeparator();
+    }
 
-        for (int i = 0; i < products.size(); i++) {
-            Product p = products.get(i);
-            String row = String.format("%-3d %-22s $%-9.2f %-12s",
-                    i + 1,
-                    truncate(p.getDecription(), 22),
-                    p.getPrice(),
-                    p.getUnitOfMeasure());
-            printLeftLine(row);
-        }
-
-        printBottomBorder();
+    private void printProductRow(int index, Product p) {
+        String row = String.format("%-3d %-22s $%-9.2f %-12s",
+                index,
+                truncate(p.getDescription(), 22),
+                p.getPrice(),
+                p.getUnitOfMeasure());
+        printLeftLine(row);
     }
 
     @Override
     public void showMessage(String message) {
-        printTopBorder();
-        int padding = WIDTH - message.length();
-        int paddingLeft = padding / 2;
-        int paddingRight = padding - paddingLeft;
-        System.out.println(CYAN + "|" + RESET
-                + repeat(" ", paddingLeft) + GREEN + BOLD + message + RESET
-                + repeat(" ", paddingRight) + CYAN + "|" + RESET);
-        printBottomBorder();
+        printHorizontalBorder();
+        printCenteredLine(message, GREEN);
+        printHorizontalBorder();
     }
 
     @Override
     public void showError(String error) {
-        String text = "! " + error + " !";
-        printTopBorder();
-        int padding = WIDTH - text.length();
-        int paddingLeft = padding / 2;
-        int paddingRight = padding - paddingLeft;
-        System.out.println(CYAN + "|" + RESET
-                + repeat(" ", paddingLeft) + RED + BOLD + text + RESET
-                + repeat(" ", paddingRight) + CYAN + "|" + RESET);
-        printBottomBorder();
+        printHorizontalBorder();
+        printCenteredLine("! " + error + " !", RED);
+        printHorizontalBorder();
     }
 
     @Override
     public String getInput(String prompt) {
         System.out.print(CYAN + "| " + RESET + YELLOW + prompt + RESET);
         String input = scanner.nextLine();
-        printBottomBorder();
+        printHorizontalBorder();
         return input;
     }
 
