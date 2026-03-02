@@ -1,7 +1,7 @@
 package co.edu.uptc.interfaces;
 
 import java.util.List;
-import co.edu.uptc.model.Product;
+import co.edu.uptc.pojo.Product;
 
 public interface ViewInterface {
 
@@ -11,5 +11,6 @@ public interface ViewInterface {
     void showError(String error);
     String getInput(String prompt);
 
+    void setPresenter(PresenterInterface presenter);
     void clearScreen();
 }

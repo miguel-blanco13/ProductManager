@@ -3,7 +3,7 @@ package co.edu.uptc.presenter;
 import co.edu.uptc.interfaces.ModelInterface;
 import co.edu.uptc.interfaces.PresenterInterface;
 import co.edu.uptc.interfaces.ViewInterface;
-import co.edu.uptc.model.Product;
+import co.edu.uptc.pojo.Product;
 
 import java.util.List;
 
@@ -44,6 +44,10 @@ public class ProductPresenter implements PresenterInterface {
         if (description == null) return;
         Double price = readPrice();
         if (price == null) return;
+        saveProduct(description, price);
+    }
+
+    private void saveProduct(String description, Double price) {
         String unit = readUnit();
         if (unit == null) return;
         this.model.addProduct(new Product(description, price, unit));
@@ -90,11 +94,8 @@ public class ProductPresenter implements PresenterInterface {
         if (this.model.isEmpty()) {
             this.view.showError("No hay productos registrados.");
         } else {
-            List<Product> products = this.model.getAllProducts();
-            this.view.showProducts(products);
-            this.view.showMessage("\nTotal: " + this.model.getProductCount() + " producto(s).");
+            showProductList(this.model.getAllProducts());
         }
-
         this.view.getInput("\nPresiona Enter para continuar...");
     }
 
@@ -104,12 +105,14 @@ public class ProductPresenter implements PresenterInterface {
         if (this.model.isEmpty()) {
             this.view.showError("No hay productos registrados.");
         } else {
-            List<Product> sortedProducts = this.model.getProductsSortedByName();
-            this.view.showProducts(sortedProducts);
-            this.view.showMessage("\nTotal: " + this.model.getProductCount() + " producto(s).");
+            showProductList(this.model.getProductsSortedByName());
         }
-
         this.view.getInput("\nPresiona Enter para continuar...");
+    }
+
+    private void showProductList(List<Product> products) {
+        this.view.showProducts(products);
+        this.view.showMessage("\nTotal: " + this.model.getProductCount() + " producto(s).");
     }
 
     public void deleteProducts() {
@@ -120,12 +123,17 @@ public class ProductPresenter implements PresenterInterface {
             this.view.getInput("\nPresiona Enter para continuar...");
             return;
         }
-        String searchTerm = this.view.getInput("Ingresa el nombre o parte del nombre a eliminar: ");
+        processDeleteInput();
+    }
+
+    private void processDeleteInput() {
+        String searchTerm = this.view.getInput("Ingresa el nombre exacto del producto a eliminar: ");
         if (searchTerm.isBlank()) {
-            this.view.showError("Debes ingresar un término de búsqueda.");
-        } else {
-            showDeleteResult(this.model.deleteProductsByName(searchTerm));
+            this.view.showError("Debes ingresar un nombre.");
+            this.view.getInput("\nPresiona Enter para continuar...");
+            return;
         }
+        showDeleteResult(this.model.deleteProductsByName(searchTerm));
         this.view.getInput("\nPresiona Enter para continuar...");
     }
 
@@ -136,5 +144,11 @@ public class ProductPresenter implements PresenterInterface {
             this.view.showMessage("✔ Se eliminaron " + deletedCount + " producto(s).");
         }
     }
+
+    @Override
+    public void setView(ViewInterface view) { this.view = view; }
+
+    @Override
+    public void setModel(ModelInterface model) { this.model = model; }
     
 }

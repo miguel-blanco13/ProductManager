@@ -1,9 +1,8 @@
-package co.edu.uptc;
+package co.edu.uptc.presenter;
 
 import co.edu.uptc.interfaces.ModelInterface;
 import co.edu.uptc.interfaces.ViewInterface;
 import co.edu.uptc.model.ProductModelManagerList;
-import co.edu.uptc.presenter.ProductPresenter;
 import co.edu.uptc.view.ConsoleView;
 
 public class Runner {

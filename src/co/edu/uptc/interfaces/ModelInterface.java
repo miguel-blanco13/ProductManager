@@ -2,7 +2,7 @@ package co.edu.uptc.interfaces;
 
 import java.util.List;
 
-import co.edu.uptc.model.Product;
+import co.edu.uptc.pojo.Product;
 
 public interface ModelInterface {
 
@@ -13,4 +13,5 @@ public interface ModelInterface {
 
     boolean isEmpty();
     int getProductCount();
+    String exec() throws Exception;
 }

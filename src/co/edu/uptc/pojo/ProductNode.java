@@ -1,4 +1,4 @@
-package co.edu.uptc.model;
+package co.edu.uptc.pojo;
 
 public class ProductNode {
 

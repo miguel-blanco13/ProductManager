@@ -7,5 +7,7 @@ public interface PresenterInterface {
     void listProductsSorted();
     void deleteProducts();
 
+    void setView(ViewInterface view);
+    void setModel(ModelInterface model);
     void start();
 }

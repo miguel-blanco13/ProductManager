@@ -1,10 +1,11 @@
 package co.edu.uptc.view;
 
 import co.edu.uptc.interfaces.ViewInterface;
-import co.edu.uptc.model.Product;
+import co.edu.uptc.pojo.Product;
 
 import java.util.List;
 import java.util.Scanner;
+import co.edu.uptc.interfaces.PresenterInterface;
 
 public class ConsoleView implements ViewInterface {
 
@@ -83,6 +84,11 @@ public class ConsoleView implements ViewInterface {
         printHorizontalBorder();
         printLine("ADMINISTRADOR DE PRODUCTOS - UPTC");
         printSeparator();
+        printMenuOptions();
+        printSeparator();
+    }
+
+    private void printMenuOptions() {
         printEmptyLine();
         printLeftLine("1.  ", "Adicionar producto");
         printLeftLine("2.  ", "Listar productos");
@@ -90,7 +96,6 @@ public class ConsoleView implements ViewInterface {
         printLeftLine("4.  ", "Borrar productos");
         printLeftLine("5.  ", "Salir");
         printEmptyLine();
-        printSeparator();
     }
 
     @Override
@@ -150,5 +155,9 @@ public class ConsoleView implements ViewInterface {
     private String truncate(String text, int maxLength) {
         if (text.length() <= maxLength) return text;
         return text.substring(0, maxLength - 3) + "...";
+    }
+
+    @Override
+    public void setPresenter(PresenterInterface presenter) {
     }
 }
